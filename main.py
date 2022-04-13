@@ -15,14 +15,31 @@ people = []
 @bot.message_handler(commands=['help'])
 def help(message):
     texto = """O fridayReminder é um bot onde você consegue adicionar tasks e pessoas à essas tasks e toda sexta-feira todos os envolvidos serão notificados do que deve ser feito naquela semana.
-    /add_user Para adicionar usuário
+    /add_user seguido do nome para adicionar usuário
+    /list_users para listar todas as pessoas adicionadas
     """
     bot.reply_to(message, texto)
 
 
 @bot.message_handler(commands=['add_user'])
 def add_user(message):
-    bot.reply_to(message, f'{message.text} pessoa adicionada com sucesso!')
+    split = message.text.split()
+    person = split[1]
+    people.append(person)
+    bot.reply_to(message, f'{person} adicionado com sucesso!')
+
+
+@bot.message_handler(commands=['add_room'])
+def add_room(message):
+    split = message.text.split()
+    room = split[1]
+    rooms.append(room)
+    bot.reply_to(message, f'{room} adicionado com sucesso!')
+
+
+@bot.message_handler(commands=['list_users'])
+def list_users(message):
+    bot.reply_to(message, f'{people}')
 
 
 @bot.message_handler(commands=['add_task'])
@@ -44,4 +61,4 @@ def responder(message):
     bot.reply_to(message, texto)
 
 
-bot.infinity_polling()
+bot.infinity_polling(interval=0, timeout=20)
