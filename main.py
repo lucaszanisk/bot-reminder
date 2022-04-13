@@ -1,44 +1,47 @@
 import telebot
+from dotenv import load_dotenv
+import os
 
-CHAVE_API = '5302146321:AAG8Ae-EduMXCN_XYNtUJCkqIerubjcCmh8'
+load_dotenv()
+
+CHAVE_API = os.getenv('API_PASSWORD')
 
 bot = telebot.TeleBot(CHAVE_API)
 
-
-@bot.message_handler(commands=["adicionar"])
-def adicionar(mensagem):
-    texto = """
-    O que você deseja adicioanr? (Clique em uma opção)
-    /pessoa Pessoa
-    /task Task"""
-    bot.send_message(mensagem.chat.id, texto)
+rooms = []
+people = []
 
 
-@bot.message_handler(commands=["deletar"])
-def deletar(mensagem):
-    texto = """ O que você deseja deletar?
-    /pessoa Pessoa
-    /task Task"""
-    bot.send_message(mensagem.chat.id, texto)
+@bot.message_handler(commands=['help'])
+def help(message):
+    texto = """O fridayReminder é um bot onde você consegue adicionar tasks e pessoas à essas tasks e toda sexta-feira todos os envolvidos serão notificados do que deve ser feito naquela semana.
+    /add_user Para adicionar usuário
+    """
+    bot.reply_to(message, texto)
 
 
-@bot.message_handler(commands=["listar"])
-def listar(mensagem):
-    bot.send_message(mensagem.chat.id, "Listando todas as tasks")
+@bot.message_handler(commands=['add_user'])
+def add_user(message):
+    bot.reply_to(message, f'{message.text} pessoa adicionada com sucesso!')
 
 
-def verificar(mensagem):
+@bot.message_handler(commands=['add_task'])
+def add_task(message):
+
+    bot.reply_to(message, f'{message.text} Task adicionada com sucesso!')
+
+
+def verificar(message):
     return True
 
 
 @bot.message_handler(func=verificar)
-def responder(mensagem):
+def responder(message):
     texto = """
-    Escolha uma opção para continuar (Clique no item):
-     /adicionar Para adicionar 
-     /deletar Para deletar
-     /listar Para mostrar todas as tasks"""
-    bot.reply_to(mensagem, texto)
+    Seja bem-vindo ao fridayremider_bot,
+    para prosseguir, clique em uma das opções:
+     /help Para saber mais sobre o bot"""
+    bot.reply_to(message, texto)
 
 
-bot.polling()
+bot.infinity_polling()
